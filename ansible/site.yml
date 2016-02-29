@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+    - pre-deploy
+#    - create_vm
+

@@ -1,0 +1,36 @@
+---
+- shell: curl 42.62.101.187/install_uos_yum_repo.sh | bash
+
+- name: install package
+  yum: name={{ item }} state=latest
+  with_items:
+    - docker-engine
+    - python-devel
+    - libffi-devel
+    - openssl-devel
+    - python-pip
+    - gcc
+    - chrony
+
+- template: src=docker.conf.j2 dest=/etc/sysconfig/docker
+
+- template: src=docker.service.j2 dest=/usr/lib/systemd/system/docker.service
+
+- template: src=chrony.conf.j2 dest=/etc/chrony.conf
+
+- command: systemctl daemon-reload
+
+- name: start docker service
+  service: name=docker state=restarted enabled=yes
+
+- name: restart ntpd service
+  service: name=chronyd state=restarted enabled=yes
+
+- pip: name=python-openstackclient
+
+- pip: name=docker-py version=1.6.0
+
+- command: parted /dev/vdb -s -- mklabel gpt mkpart KOLLA_CEPH_OSD_BOOTSTRAP 1 -1
+  when: inventory_hostname in groups['storage']
+
+- copy: src=/etc/hosts dest=/etc/hosts
