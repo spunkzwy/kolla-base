@@ -1,0 +1,11 @@
+nova delete control01
+nova delete control02
+nova delete control03
+nova delete storage01
+nova delete storage02
+nova delete storage03
+nova delete network01
+nova delete compute01
+cinder delete storage01
+cinder delete storage02
+cinder delete storage03

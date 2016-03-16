@@ -86,26 +86,35 @@ boot_storage() {
               --nic net-id="${management_network_id}",v4-fixed-ip="${instance_ip}" \
               ${instance_name}
     instance_id=`get_instance_id $instance_name`
-    cinder create --display-name "${instance_name}" 10
+    cinder create --display-name "${instance_name}" 30
     wait_instance_active $instance_id
     volume_id=`get_volume_id $instance_name`
     nova volume-attach $instance_name $volume_id
 }
 
+set_network() {
+    local ip_addr=$1
+    network_port=`neutron port-list | grep $ip_addr | awk '{printf $2}'`
+    neutron port-update $network_port --allowed_address_pairs type=dict list=true ip_address=192.168.30.150 ip_address=192.168.30.151
 
-boot_network "network01" "192.168.20.11"
+}
 
-boot_control "control01" "192.168.20.12"
-boot_control "control02" "192.168.20.13"
-boot_control "control03" "192.168.20.14"
-
-boot_compute "compute01" "192.168.20.15"
-
-boot_storage "storage01" "192.168.20.16"
-boot_storage "storage02" "192.168.20.17"
-boot_storage "storage03" "192.168.20.18"
-
-
+#boot_network "network01" "192.168.20.11"
+#
+#boot_control "control01" "192.168.20.12"
+#boot_control "control02" "192.168.20.13"
+#boot_control "control03" "192.168.20.14"
+#
+#boot_compute "compute01" "192.168.20.15"
+#
+#boot_storage "storage01" "192.168.20.16"
+#boot_storage "storage02" "192.168.20.17"
+#boot_storage "storage03" "192.168.20.18"
+#
+#set_network 192.168.20.16
+#set_network 192.168.20.17
+#set_network 192.168.20.18
+set_network 192.168.30.56
 
 
 
