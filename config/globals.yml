@@ -1,0 +1,64 @@
+---
+# You can use this file to override _any_ variable throughout Kolla.
+# Additional options can be found in the 'kolla/ansible/group_vars/all.yml' file.
+# Default value of all the commented parameters are shown here, To override
+# the default value uncomment the parameter and change its value.
+
+###################
+# Kolla options
+###################
+# Valid options are [ COPY_ONCE, COPY_ALWAYS ]
+config_strategy: "COPY_ALWAYS"
+
+# Valid options are [ centos, fedora, oraclelinux, ubuntu ]
+kolla_base_distro: "centos"
+
+# Valid options are [ binary, source ]
+kolla_install_type: "binary"
+openstack_release: "2.0.3"
+
+# This should be a VIP, an unused IP on your network that will float between
+# the hosts running keepalived for high-availability. When running an All-In-One
+# without haproxy and keepalived, this should be the first IP on your
+# 'network_interface' as set in the Networking section below.
+enable_magnum: "no"
+enable_swift: "no"
+
+
+###################
+# Ceph options
+###################
+# Ceph can be setup with a caching to improve performance. To use the cache you
+# must provide separate disks than those for the OSDs
+#ceph_enable_cache: "no"
+# Valid options are [ forward, none, writeback ]
+#ceph_cache_mode: "writeback"
+
+# A requirement for using the erasure-coded pools is you must setup a cache tier
+# Valid options are [ erasure, replicated ]
+#ceph_pool_type: "replicated"
+
+
+#######################################
+# Manila - Shared File Systems Options
+#######################################
+#manila_enable_dhss: "yes"
+
+
+#######################################
+# Swift options
+#######################################
+# Swift expects block devices to be available for storage. Two types of storage
+# are supported: 1 - storage device with a special partition name and filesystem
+# label, 2 - unpartitioned disk  with a filesystem. The label of this filesystem
+# is used to detect the disk which Swift will be using.
+
+# Swift support two mathcing modes, valid options are [ prefix, strict ]
+#swift_devices_match_mode: "strict"
+
+# This parameter defines matching pattern: if "strict" mode was selected,
+# for swift_devices_match_mode then swift_device_name should specify the name of
+# the special swift partition for example: "KOLLA_SWIFT_DATA", if "prefix" mode was
+# selected then swift_devices_name should specify a pattern which would match to
+# filesystems' labels prepared for swift.
+#swift_devices_name: "KOLLA_SWIFT_DATA"

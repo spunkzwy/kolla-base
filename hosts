@@ -1,0 +1,21 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+42.62.101.187 centos7.mirrors.ustack.com
+
+192.168.20.38 network01
+192.168.20.32 control01
+192.168.20.33 control02
+192.168.20.34 control03
+192.168.20.39 compute01
+192.168.20.35 storage01
+192.168.20.36 storage02
+192.168.20.37 storage03
+
+192.168.20.38 network01.novalocal
+192.168.20.32 control01.novalocal
+192.168.20.33 control01.novalocal
+192.168.20.34 control01.novalocal
+192.168.20.39 compute01.novalocal
+192.168.20.35 storage01.novalocal
+192.168.20.36 storage01.novalocal
+192.168.20.37 storage01.novalocal

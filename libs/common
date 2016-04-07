@@ -80,10 +80,10 @@ boot_node() {
     local start_node=${5:-True}
     local image_id=${6:-75420fdf-6608-402d-86b5-2da92fc3bbe3}
     local timeout=${7:-10}
-    local volume_num=${8:-1}
+    local volume_num=${8:-2}
 
     if [ "$start_node" == "True" ]; then
-        nova boot --flavor "${flavor}"  --image "${image_id}" --key-name default \
+        nova boot --flavor "${flavor}"  --image "${image_id}" --key-name default --admin-pass kollapass\
                   --nic net-id="${api_network_id}",v4-fixed-ip="192.168.20.${instance_ip}" \
                   ${instance_name}
     fi
