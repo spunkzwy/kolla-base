@@ -1,0 +1,128 @@
+#!/bin/bash 
+
+# eth0 api-interface
+# eth1 neutron_external_interface
+# eth2 storage_interface
+# eth4 tunel_interface
+
+create_port() {
+    local network_id=$1
+    local subnet_id=$2
+    local ip_address=$3
+    local port_name=$4
+    neutron port-create --fixed-ip subnet_id="${subnet_id}",ip_address="${ip_address}" --name "${port_name}" "$network_id"
+}
+
+check_instance_exist() {
+    instance_name=$1
+    nova list | grep $instance_name
+}
+
+
+wait_instance_active() {
+    local instance_id=$1
+    
+    for i in $( seq 1 $timeout);
+    do
+        nova show "$instance_id" | grep ACTIVE
+        if [ $? == 0 ];then
+            break
+        fi
+    done
+    if [ $i == $timeout ];then
+        echo "create instance timeout"
+        exit 1
+    fi
+}
+
+
+get_instance_id() {
+    local instance_name=$1
+    instance_id=`nova list | grep $instance_name | sed 's/ |.*//g' | sed 's/| //g'`
+    echo $instance_id
+}
+
+
+get_volume_id() {
+    local volume_name=$1
+    volume_id=`cinder list | grep $volume_name | sed 's/ |.*//g' | sed 's/| //g'`
+    echo $volume_id
+}
+
+get_subnet_id() {
+    local subnet_name=$1
+    subnet_id=`neutron subnet-list | grep $subnet_name | sed 's/ |.*//g' | sed 's/| //g'`
+    echo $subnet_id
+}
+
+get_floatingip_id() {
+    floatingip_id=`neutron floatingip-list  | grep 42 | sed 's/ |.*//g' | sed 's/| //g'`
+    echo $floatingip_id
+}
+
+get_network_id() {
+    local network_name=$1
+    network_id=`neutron net-list | grep $network_name | sed 's/ |.*//g' | sed 's/| //g'`
+    echo $network_id
+}
+
+get_port_id() {
+    local port_name=$1
+    port_id=`neutron port-list | grep $port_name | sed 's/ |.*//g' | sed 's/| //g'`
+    echo $port_id
+}
+
+boot_node() {
+    local instance_name=$1
+    local instance_ip=$2
+    local is_storage=$3
+    local flavor=$4
+    local start_node=${5:-True}
+    local image_id=${6:-75420fdf-6608-402d-86b5-2da92fc3bbe3}
+    local timeout=${7:-10}
+    local volume_num=${8:-1}
+
+    if [ "$start_node" == "True" ]; then
+        nova boot --flavor "${flavor}"  --image "${image_id}" --key-name default \
+                  --nic net-id="${api_network_id}",v4-fixed-ip="192.168.20.${instance_ip}" \
+                  ${instance_name}
+    fi
+    instance_id=`get_instance_id $instance_name`
+    wait_instance_active $instance_id
+
+    create_port $external_network_id $external_subnet_id "192.168.30.${instance_ip}" "external_port_for_${instance_name}"
+    external_port_id=`get_port_id "external_port_for_${instance_name}"`
+    nova interface-attach --port-id $external_port_id $instance_id
+              
+    create_port $storage_network_id $storage_subnet_id "192.168.40.${instance_ip}" "storage_port_for_${instance_name}"
+    storage_port_id=`get_port_id "storage_port_for_${instance_name}"`
+    nova interface-attach --port-id $storage_port_id $instance_id
+              
+    create_port $tunnel_network_id $tunnel_subnet_id "192.168.50.${instance_ip}" "tunnel_port_for_${instance_name}"
+    tunnel_port_id=`get_port_id "tunnel_port_for_${instance_name}"`
+    nova interface-attach --port-id $tunnel_port_id $instance_id
+
+    if [ "${is_storage}" == "is_storage" ]; then
+        for i in $(seq 1 $volume_num); do 
+            create_volume "${instance_name}_${i}"
+            volume_id=`get_volume_id "${instance_name}_${i}"`
+            nova volume-attach $instance_name $volume_id
+        done
+    fi
+}
+
+create_volume() {
+    local volume_name=$1
+
+    cinder list | grep $volume_name
+    if [ $? != 0 ]; then
+            cinder create --display-name "$volume_name" 10
+    fi        
+}
+
+set_network() {
+    local ip_addr=$1
+    network_port=`neutron port-list | grep $ip_addr | awk '{printf $2}'`
+    neutron port-update $network_port --allowed_address_pairs type=dict list=true ip_address=192.168.20.200 ip_address=192.168.30.151
+
+}
