@@ -25,7 +25,7 @@ pushd "${TOPDIR}/kolla-base" > /dev/null
 \cp config/* /etc/kolla/
 \cp ansible_hosts /etc/ansible/hosts
 \cp hosts /etc/hosts
-
+\cp ansible.cfg /etc/ansible/ansible.cfg
 # 初始化目标节点
 ansible-playbook -e @/etc/kolla/globals.yml -e @/etc/kolla/passwords.yml ansible/site.yml
 
