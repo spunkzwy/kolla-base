@@ -1,0 +1,9 @@
+export OS_VOLUME_API_VERSION=1
+export OS_REGION_NAME=bj1
+export OS_AUTH_URL=https://identity.api.ustack.com/v3
+
+export OS_PROJECT_NAME=项目名
+export OS_PROJECT_ID=填写你刚创建的project id
+export OS_PASSWORD=密码
+export OS_USERNAME=用户名
+export OS_USER_ID=用户id
