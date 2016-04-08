@@ -10,10 +10,8 @@ pip install -U ansible==1.9.4
 
 # 获取kolla代码
 pushd "${TOPDIR}" > /dev/null
-git clone https://github.com/openstack/kolla.git
+git clone https://github.com/spunkzwy/kolla.git
 pushd "${TOPDIR}/kolla" > /dev/null
-git fetch origin stable/mitaka:mitaka
-git checkout mitaka
 cp -r etc/kolla /etc/
 popd > /dev/null
 
