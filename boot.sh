@@ -51,7 +51,7 @@ boot_node admin-server  31 no_storage standard-1
 
 neutron floatingip-create BGP
 floatingip_id=`get_floatingip_id`
-admin_port_id=`get_port_id 192.168.20.41`
+admin_port_id=`get_port_id 192.168.20.31`
 neutron floatingip-associate $floatingip_id $admin_port_id
 
 set_network 192.168.20.18
