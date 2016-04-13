@@ -6,6 +6,7 @@
 # eth4 tunel_interface
 
 set -x
+source openrc
 source libs/common
 
 start_node="True"

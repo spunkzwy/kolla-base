@@ -1,10 +1,13 @@
 ---
 - copy: src=ifcfg-eth2 dest=/etc/sysconfig/network-scripts/ifcfg-eth2
+
 - copy: src=ifcfg-eth3 dest=/etc/sysconfig/network-scripts/ifcfg-eth3
 
 - name: restart network service
   service: name=network state=restarted enabled=yes
+
 - shell: curl 42.62.101.187/install_uos_yum_repo.sh | bash
+
 - name: install package
   yum: name={{ item }} state=latest
   with_items:

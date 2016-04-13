@@ -18,7 +18,17 @@
     source boot.sh
     bash boot.sh
 
-5. 你已经有了一个多节点具有高可用功能的openstack集群
+5. 登录到控制台将floatingip带宽调节到最大
+
+6. 配置端口转发
+  把22端口转发到192.168.20.31的22端口,并记下公网ip
+
+7. 执行
+           替换为你的公网ip
+  ssh root@42.62.93.237 'yum install git -y &&git clone https://github.com/spunkzwy/kolla-base.git && bash kolla-base/init.sh'
+
+
+8. 你已经有了一个多节点具有高可用功能的openstack集群
 
 
 架构
