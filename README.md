@@ -1,3 +1,6 @@
+.. image:: https://api.travis-ci.org/spunkzwy/kolla-base.svg?branch=master
+    :target: https://travis-ci.org/spunkzwy/kolla-base
+
 # kolla-base
 使用kolla在uos公有云创建一个多节点的openstack集群
 
