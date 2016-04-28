@@ -6,12 +6,15 @@
 # eth4 tunel_interface
 
 set -x
-source openrc
+source etc/openrc
 source libs/common
 
 start_node="True"
+# 镜像id，默认不需要改变
 image_id="75420fdf-6608-402d-86b5-2da92fc3bbe3"
+# 超时时间，创建虚拟机和云硬盘时十秒的超时时间
 timeout=10
+# 每台存储节点对应的云硬盘数量
 volume_num=3
 
 

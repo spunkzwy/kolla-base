@@ -63,3 +63,4 @@ target/
 
 # Config file
 openrc
+etc/openrc
