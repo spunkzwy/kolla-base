@@ -1,14 +1,18 @@
 ---
-- copy: src=ifcfg-eth2 dest=/etc/sysconfig/network-scripts/ifcfg-eth2
+- name: Network config
+  copy: src=ifcfg-{{ item }} dest=/etc/sysconfig/network-scripts/ifcfg-{{ item }}
+  with_items:
+    - eth2
+    - eth3
+    - eth4
 
-- copy: src=ifcfg-eth3 dest=/etc/sysconfig/network-scripts/ifcfg-eth3
-
-- name: restart network service
+- name: Restart network service
   service: name=network state=restarted enabled=yes
 
-- shell: curl 42.62.101.187/install_uos_yum_repo.sh | bash
+- name: Installing latest version docker
+  shell: curl -sSL https://get.docker.io | bash
 
-- name: install package
+- name: Install base package
   yum: name={{ item }} state=latest
   with_items:
     - docker-engine
@@ -19,18 +23,21 @@
     - gcc
     - chrony
 
-- template: src=docker.conf.j2 dest=/etc/sysconfig/docker
+- name: Docker config
+  template: src=docker.conf.j2 dest=/etc/sysconfig/docker
 
-- template: src=docker.service.j2 dest=/usr/lib/systemd/system/docker.service
-
-- template: src=chrony.conf.j2 dest=/etc/chrony.conf
+- name: Change docker service file
+  template: src=docker.service.j2 dest=/usr/lib/systemd/system/docker.service
 
 - command: systemctl daemon-reload
 
-- name: start docker service
+- name: Start docker service
   service: name=docker state=restarted enabled=yes
 
-- name: restart ntpd service
+- name: Config ntp serice
+  template: src=chrony.conf.j2 dest=/etc/chrony.conf
+
+- name: Restart ntpd service
   service: name=chronyd state=restarted enabled=yes
 
 - pip: name=python-openstackclient

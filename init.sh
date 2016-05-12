@@ -26,7 +26,7 @@ pushd "${TOPDIR}/kolla-base" > /dev/null
 \cp ansible.cfg /etc/ansible/ansible.cfg
 
 # 初始化目标节点
-ansible-playbook -e @/etc/kolla/globals.yml -e @/etc/kolla/passwords.yml ansible/site.yml
+#ansible-playbook -e @/etc/kolla/globals.yml -e @/etc/kolla/passwords.yml ansible/site.yml
 
 # 部署openstack集群
-kolla-ansible deploy -i /etc/ansible/hosts
+#kolla-ansible deploy -i /etc/ansible/hosts
